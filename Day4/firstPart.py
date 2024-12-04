@@ -1,3 +1,5 @@
+import math
+
 board = []
 
 with open("input.txt") as files:
@@ -6,72 +8,42 @@ with open("input.txt") as files:
         
         board.append(line.strip())
         
-kernel = [["👿"]*4]*4
+pain = []
+pain.append([(0, 0), (0, 1), (0, 2), (0, 3)])
+pain.append([(0, 0), (0, -1), (0, -2), (0, -3)])
+pain.append([(0, 0), (1, 1), (2, 2), (3, 3)])
+pain.append([(0, 0), (1, -1), (2, -2), (3, -3)])
 
+pain.append([(0, 0), (1, 0), (2, 0), (3, 0)])
+pain.append([(0, 0), (-1, 0), (-2, 0), (-3, 0)])
+pain.append([(0, 0), (-1, 1), (-2, 2), (-3, 3)])
+pain.append([(0, 0), (-1, -1), (-2, -2), (-3, -3)])
 
-
-def checkKernal():
-    bigCount = 0
-
-    for i in range(4):
+goodcount = 0
+for i in range(0, len(board)):
+    for j in range(0, len(board[0])):
         
-        w = ""
-        for j in range(4):
-            w += kernel[j][i]
+        if board[i][j] == "X":   
             
-        if w == "XMAS":
-            bigCount += 1
-        if w == "SAMX":
-            bigCount += 1
+            for path in pain:
+                
+                word = ""
+                good = True
+                
+                for step in path:
+                    newPos = (i + step[0], j + step[1])
+                    
+                    if newPos[0] >= len(board) or newPos[1] >= len(board[0]):
+                        good = False
+                    elif newPos[0] < 0 or newPos[1] < 0:
+                        good = False
+                    else:
+                        word += board[newPos[0]][newPos[1]]
+                        
+                if good:
+                    if word=="XMAS":
+                        goodcount += 1
+                    
+                
             
-            
-    oneDiagonal = ""
-    twoDiagonal = ""
-    
-    for i in range(4):
-        if kernel[i] == "XMAS":
-            bigCount += 1
-            
-        if kernel[i] == "SAMX":
-            bigCount += 1
-        
-        oneDiagonal += kernel[i][i]
-        twoDiagonal += kernel[3-i][i]
-        
-    if oneDiagonal == "XMAS":
-        bigCount += 1
-    
-    if oneDiagonal == "SAMX":
-        bigCount += 1
-        
-    if twoDiagonal == "XMAS":
-        bigCount += 1
-    
-    if twoDiagonal == "SAMX":
-        bigCount += 1
-            
-    return bigCount
-            
-massive = 0
-
-for i in range(0, len(board)-3):
-    for j in range(0, len(board[0])-3):
-        
-        for p in range(4):
-            kernel[p] = board[i+p][j:j+4]
-            
-        dt = checkKernal()
-        
-        print("")
-        print(kernel[0])
-        print(kernel[1])
-        print(kernel[2])
-        print(kernel[3])
-        print(dt)
-        print("")
-        
-        
-        massive += dt
-
-print(massive)
-        
+print(goodcount)
