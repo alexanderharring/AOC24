@@ -59,6 +59,7 @@ for ind, line in enumerate(dataTwo):
 for i,l in enumerate(dataTwo):
     
     if i not in hl:
+
         bigSum += l[int(math.floor(len(l)/2))]
         
 print(bigSum)
