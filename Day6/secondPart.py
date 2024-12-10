@@ -46,7 +46,7 @@ cycle = ["^", ">", "v", "<"]
 cyclePos = 0
 
 visited = set()
-visited.add(guardPos)
+visited.add((guardPos, guardDirection))
 
 def happy(p):
     return p[0] < len(board) and p[1] < len(board[0]) and p[0] >= 0 and p[1] >= 0
@@ -87,9 +87,43 @@ def bounce(P0, dirn):
     return newPos
     
 while guardPos != (-1, -1):
-    print(guardPos, guardDirection)
+    visited.add((guardPos, guardDirection))
     guardPos = bounce(guardPos, guardDirection)
     cyclePos += 1
     guardDirection = cycle[cyclePos % 4]
-    
-print("Broken")
+
+changeCount = 0    
+
+for iPOS in range(len(board)):
+    for jPOS in range(len(board[0])):
+        
+        for d in range(4):
+            dirn = cycle[d]
+
+            checkPos = (iPOS + directionMap[dirn][0], jPOS + directionMap[dirn][1])
+            
+            if iPOS not in obstacleMapI:
+                obstacleMapI[iPOS] = []
+                
+            if jPOS not in obstacleMapJ:
+                obstacleMapJ[jPOS] = []
+            
+            obstacleMapI[iPOS].append(jPOS)
+            obstacleMapJ[jPOS].append(iPOS)
+            
+            overDer = bounce(checkPos, dirn)
+            
+            if overDer != (-1, -1):
+                
+                if (overDer, cycle[(d+1)%4]) in visited:
+                    
+                    changeCount += 1
+            
+            obstacleMapI[iPOS].pop()
+            obstacleMapJ[jPOS].pop()
+            
+            
+            
+print(changeCount)
+            
+            
